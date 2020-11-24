@@ -32,7 +32,7 @@
 #include "ogr_p.h"
 
 constexpr const char *pszSpecificationUrn = "urn:ogc:def:crs:EPSG::28992";
-constexpr const size_t nDefaultLokaalIDSize = 16;
+constexpr const size_t nDefaultIDSize = 16;
 constexpr const size_t nWplLokaalIDSize = 4;
 
 /************************************************************************/
@@ -153,8 +153,8 @@ void OGRLVBAGLayer::AddSpatialRef( OGRwkbGeometryType eTypeIn )
 void OGRLVBAGLayer::AddIdentifierFieldDefn()
 {
     OGRFieldDefn oField0("lvID", OFTString);
-    OGRFieldDefn oField1("namespace", OFTString);
-    OGRFieldDefn oField2("lokaalID", OFTString);
+    OGRFieldDefn oField1("domein", OFTString);
+    OGRFieldDefn oField2("identificatie", OFTString);
     OGRFieldDefn oField3("versie", OFTString);
 
     poFeatureDefn->AddFieldDefn(&oField0);
@@ -521,7 +521,7 @@ void OGRLVBAGLayer::EndElementCbk( const char *pszName )
                 const char *pszValue = osElementString.c_str();
                 const size_t nIdLength = osElementString.size();
                 const OGRFieldDefn *poFieldDefn = poFeatureDefn->GetFieldDefn(iFieldIndex);
-                if( EQUAL("lokaalid", pszTag)
+                if( EQUAL("identificatie", pszTag)
                     && nIdLength != nDefaultLokaalIDSize && nIdLength != nWplLokaalIDSize )
                 {
                     if( nIdLength == nDefaultLokaalIDSize-1 )
@@ -674,8 +674,8 @@ void OGRLVBAGLayer::EndElementCbk( const char *pszName )
     {
         nFeatureElementDepth = 0;
 
-        const int iFieldIndexNamespace = poFeatureDefn->GetFieldIndex("namespace");
-        const int iFieldIndexLocalId = poFeatureDefn->GetFieldIndex("lokaalID");
+        const int iFieldIndexNamespace = poFeatureDefn->GetFieldIndex("domein");
+        const int iFieldIndexLocalId = poFeatureDefn->GetFieldIndex("identificatie");
 
         CPLAssert(m_poFeature->GetFieldAsString(iFieldIndexNamespace));
         CPLAssert(m_poFeature->GetFieldAsString(iFieldIndexLocalId));
